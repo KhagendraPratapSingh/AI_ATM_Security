@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Security Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .blink { animation: blinker 1.5s linear infinite; color: red; font-weight: bold; }
+        @keyframes blinker { 50% { opacity: 0; } }
+        .log-box { height: 300px; overflow-y: scroll; background: #222; border: 1px solid #444; }
+        .video-container { border: 4px solid #333; border-radius: 10px; overflow: hidden; }
+    </style>
+</head>
+<body class="bg-dark text-white">
+
+    <nav class="navbar navbar-dark bg-primary mb-4">
+        <div class="container-fluid">
+            <span class="navbar-brand mb-0 h1">🛡️ AI ATM Security System</span>
+            <span class="badge bg-success">Status: System Active</span>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="row">
+            
+            <div class="col-md-8">
+                <div class="card bg-secondary text-white shadow-lg">
+                    <div class="card-header bg-danger fw-bold">🔴 LIVE SURVEILLANCE FEED</div>
+                    <div class="card-body p-0 video-container">
+                        <img src="{{ url_for('video_feed') }}" width="100%" class="img-fluid">
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                
+                <div class="d-grid gap-2 mb-4">
+                    <a href="/find_item" class="btn btn-info btn-lg fw-bold">
+                        🔍 Find Missing Item
+                    </a>
+                </div>
+
+                <div class="card bg-warning text-dark mb-3">
+                    <div class="card-header fw-bold">⚠️ THREAT LOGS (Real-Time)</div>
+                    <div class="card-body p-2">
+                        <ul class="list-group log-box" id="log-list">
+                            <li class="list-group-item bg-dark text-secondary">Waiting for events...</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="d-grid gap-2">
+                    <a href="/view_db" class="btn btn-outline-light">📂 View Database Records</a>
+                    <button class="btn btn-danger btn-lg blink">🚨 EMERGENCY SMS</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        setInterval(function() {
+            fetch('/get_alerts')
+            .then(response => response.json())
+            .then(data => {
+                let logList = document.getElementById('log-list');
+                
+                if(data.length > 0) {
+                    logList.innerHTML = ""; // Clear old logs
+                    data.forEach(log => {
+                        let item = document.createElement('li');
+                        item.className = "list-group-item list-group-item-danger"; 
+                        item.innerText = log;
+                        logList.appendChild(item);
+                    });
+                }
+            });
+        }, 1000); // Check every 1 second
+    </script>
+
+</body>
+</html>
