@@ -176,4 +176,4 @@ Python, Flask, OpenCV, YOLOv8, Face Recognition, Twilio, SQLite
 
 ## License
 
-This project is developed for educational and research purposes.
+This project is licensed under the MIT License. See the LICENSE file for details.
